@@ -16,7 +16,7 @@ An example to illustrate how to accelerate a stepper motor using the algorithm p
 An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
 ‘Embedded Systems Programming’ January 2005, ‘Generate stepper-motor speed profiles in real time’, an article by David Austin.
 
-## example/accelerate-stepper-motor-joseph-morgridge-24-algorithm
+## accelerate-stepper-motor-joseph-morgridge-24-algorithm
 
 An example to illustrate how to accelerate a stepper motor using an algorithm developed based on the equations;
 v = u + at and s = ut + 1/2at^2
