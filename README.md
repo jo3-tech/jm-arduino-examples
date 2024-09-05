@@ -1,5 +1,7 @@
 # Arduino Examples
 
+[![Static check](https://github.com/jo3-tech/jm_arduino_examples/actions/workflows/static-check.yaml/badge.svg)](https://github.com/jo3-tech/jm_arduino_examples/actions/workflows/static-check.yaml) [![Build examples](https://github.com/jo3-tech/jm_arduino_examples/actions/workflows/build-examples.yaml/badge.svg)](https://github.com/jo3-tech/jm_arduino_examples/actions/workflows/build-examples.yaml)
+
 Useful examples and algorithm implementations for the Arduino platform.
 
 This repository is a collection of examples, usually written during feasibility studies for the implementation of a library or project.
