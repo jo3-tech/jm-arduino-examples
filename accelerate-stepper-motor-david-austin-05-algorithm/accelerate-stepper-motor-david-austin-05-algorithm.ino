@@ -3,7 +3,7 @@
 // Licensed under MIT License.
 // See the LICENSE file in the project root for full license details.
 
-/// @file accelerate_stepper_motor_david_austin_05_algorithm.ino
+/// @file accelerate-stepper-motor-david-austin-05-algorithm.ino
 /// @brief An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
 /// ‘Embedded Systems Programming’ January 2005, ‘Generate stepper-motor speed profiles in real time’, an article by David Austin.
 
