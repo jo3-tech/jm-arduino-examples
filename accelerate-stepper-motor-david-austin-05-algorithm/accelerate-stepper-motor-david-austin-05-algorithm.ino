@@ -69,7 +69,7 @@ void setup() {
 
   // Calculate the speed/microstep period for n = 0. 
   Cn = 0.676 * f * sqrt(2.0 / kAcceleration_microsteps_per_s_per_s); // Equation 15.
-  //Serial.print("C0 = "); Serial.println(Cn);
+  //Serial.print(F("C0 = ")); Serial.println(Cn);
   microstep_period_in_flux_us = Cn;
   n = 1;
 
@@ -87,7 +87,7 @@ void loop() {
   AccelerateAndMoveAtSpeed();
 }
 
- /// @brief Move by a microstep.
+/// @brief Move by a microstep.
 void MoveByMicrostep() {
   digitalWrite(kPulPin, LOW);
   delayMicroseconds(kPulDelay);
@@ -98,7 +98,7 @@ void MoveByMicrostep() {
   }
 }
 
- /// @brief Accelerate the motor to the max speed and then move at the max speed.
+/// @brief Accelerate the motor to the max speed and then move at the max speed.
 void AccelerateAndMoveAtSpeed() {
   unsigned long current_time_us = micros();
   if ((current_time_us - reference_time_us) >= microstep_period_in_flux_us) {    
@@ -108,11 +108,11 @@ void AccelerateAndMoveAtSpeed() {
   }
 }
 
- /// @brief Calculate the new speed/microstep period.
+/// @brief Calculate the new speed/microstep period.
 void CalculateNewSpeed() {
-  if (Cn > kMicrostepPeriod_us) {
+  if (microstep_period_in_flux_us > kMicrostepPeriod_us) {
     Cn = Cn - ((2.0 * Cn) / ((4.0 * n) + 1)); // Equation 13.
-    //Serial.print("C"); Serial.print(n); Serial.print(" = "); Serial.println(Cn);
+    //Serial.print(F("C")); Serial.print(long(n)); Serial.print(F(" = ")); Serial.println(Cn);
     n++;
   }
   else {
