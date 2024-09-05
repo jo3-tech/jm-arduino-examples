@@ -68,7 +68,7 @@ void setup() {
   //digitalWrite(kDirPin, HIGH);
 
   // Calculate the speed/microstep period for n = 0. 
-  Cn = 0.676 * f * sqrt(2.0 / kAcceleration_microsteps_per_s_per_s);
+  Cn = 0.676 * f * sqrt(2.0 / kAcceleration_microsteps_per_s_per_s); // Equation 15.
   //Serial.print("C0 = "); Serial.println(Cn);
   microstep_period_in_flux_us = Cn;
   n = 1;
@@ -111,7 +111,7 @@ void AccelerateAndMoveAtSpeed() {
  /// @brief Calculate the new speed/microstep period.
 void CalculateNewSpeed() {
   if (Cn > kMicrostepPeriod_us) {
-    Cn = Cn - ((2.0 * Cn) / ((4.0 * n) + 1));
+    Cn = Cn - ((2.0 * Cn) / ((4.0 * n) + 1)); // Equation 13.
     //Serial.print("C"); Serial.print(n); Serial.print(" = "); Serial.println(Cn);
     n++;
   }
