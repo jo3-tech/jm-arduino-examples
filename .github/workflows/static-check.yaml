@@ -20,3 +20,4 @@ jobs:
           compliance: specification
           library-manager: false
           project-type: sketch
+          recursive: true
