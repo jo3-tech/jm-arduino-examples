@@ -97,6 +97,7 @@ void MoveByMicrostep() {
   digitalWrite(kPulPin, LOW);
   delayMicroseconds(kPulDelay);
   digitalWrite(kPulPin, HIGH);
+  //delayMicroseconds(kPulDelay); // May not be needed.
 
   if (distance_microsteps != 0) {
     distance_microsteps--;
