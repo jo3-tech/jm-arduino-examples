@@ -47,7 +47,7 @@ uint64_t reference_time_us; ///< Reference time (us) for the microstep period.
 /// Acceleration.
 const float kAcceleration_microsteps_per_s_per_s = 3000.0; ///< Target acceleration (microsteps/s^2).
 const float kAcceleration_microsteps_per_us_per_us = kAcceleration_microsteps_per_s_per_s / (1000000.0 * 1000000.0); ///< Target acceleration (microsteps/us^2).
-uint64_t n = 1; ///< Iteration counter.
+uint64_t i = 1; ///< Iteration counter.
 /// @}
 
 /// @brief Other properties.
@@ -69,13 +69,13 @@ void setup() {
   // Set motion direction (if required).
   //digitalWrite(kDirPin, HIGH);
 
-  // Calculate the speed/microstep period for i = 0 (n = 1).
+  // Calculate the speed/microstep period for i = 1.
   vi_microsteps_per_us = kAcceleration_microsteps_per_us_per_us * sqrt(2.0 / kAcceleration_microsteps_per_us_per_us);
   Ti_us = 1.0 / vi_microsteps_per_us;
   //Serial.print(F("v1_microsteps_per_us = ")); Serial.println(vi_microsteps_per_us);
   //Serial.print(F("T1_us = ")); Serial.println(Ti_us);
   microstep_period_in_flux_us = Ti_us;
-  n = 2;
+  i = 2;
 
   // Delay for the startup time.
   delay(kStartupTime_ms);
@@ -117,8 +117,9 @@ void CalculateNewSpeed() {
   if (microstep_period_in_flux_us > kMicrostepPeriod_us) {
     vi_microsteps_per_us = vi_microsteps_per_us + (kAcceleration_microsteps_per_us_per_us / vi_microsteps_per_us);
     Ti_us = 1.0 / vi_microsteps_per_us; // Equation 13.
-    //Serial.print(F("v")); Serial.print(long(n)); Serial.print(F("_microsteps_per_us = ")); Serial.println(vi_microsteps_per_us);
-    //Serial.print(F("T")); Serial.print(long(n)); Serial.print(F("_us = ")); Serial.println(Ti_us);
+    //Serial.print(F("v")); Serial.print(long(i)); Serial.print(F("_microsteps_per_us = ")); Serial.println(vi_microsteps_per_us);
+    //Serial.print(F("T")); Serial.print(long(i)); Serial.print(F("_us = ")); Serial.println(Ti_us);
+    i++;
   }
   else {
     Ti_us = kMicrostepPeriod_us;
