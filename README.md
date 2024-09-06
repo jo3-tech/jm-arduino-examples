@@ -8,16 +8,12 @@ This repository is a collection of examples, usually written during feasibility 
 
 ## accelerate-stepper-motor-aryeh-eiderman-04-algorithm
 
-An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
-‘Real Time Stepper Motor Linear Ramping Just by Addition and Multiplication’ 2004, a paper by Aryeh Eiderman.
+An example to illustrate how to accelerate a stepper motor using the algorithm presented in: ‘Real Time Stepper Motor Linear Ramping Just by Addition and Multiplication’ 2004, a paper by Aryeh Eiderman.
 
 ## accelerate_stepper_motor_david_austin_05_algorithm
 
-An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
-‘Embedded Systems Programming’ January 2005, ‘Generate stepper-motor speed profiles in real time’, an article by David Austin.
+An example to illustrate how to accelerate a stepper motor using the algorithm presented in: ‘Embedded Systems Programming’ January 2005, ‘Generate stepper-motor speed profiles in real time’, an article by David Austin.
 
 ## accelerate-stepper-motor-joseph-morgridge-24-algorithm
 
-An example to illustrate how to accelerate a stepper motor using an algorithm developed based on the equations;
-v = u + at and s = ut + 1/2at^2
-These are simplified based on the conditions under which the algorithm is implemented on a microcontroller.
+An example to illustrate how to accelerate a stepper motor using an algorithm developed based on the equations; "v = u + at" and "s = ut + 1/2at<sup>2</sup>" which are simplified based on the conditions under which the algorithm is implemented on a microcontroller.
