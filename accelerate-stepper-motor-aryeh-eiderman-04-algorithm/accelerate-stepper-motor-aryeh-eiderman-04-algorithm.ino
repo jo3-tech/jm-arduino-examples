@@ -57,8 +57,8 @@ uint16_t kStartupTime_ms = 1000; ///< Minimum startup/boot time in milliseconds 
 
 /// @brief Benchmarking.
 bool benchmarked = false; ///< Flag to indicate if the acceleration time has been obtained.
-uint64_t reference_acceleration_time_ms; ///< Reference time (ms) for benchmarking.
-uint32_t acceleration_time_ms; ///< Time taken (ms) to accelerate to max speed.
+uint64_t reference_calculation_time_us; ///< Reference time (us) for benchmarking.
+uint32_t calculation_time_us; ///< Time taken (us) to calculate a new speed.
 
 /// @brief The main application entry point for initialisation tasks.
 void setup() {
@@ -84,26 +84,12 @@ void setup() {
 
   // Delay for the startup time.
   delay(kStartupTime_ms);
-
-  reference_acceleration_time_ms = millis();
 }
 
 /// @brief The continuously running function for repetitive tasks.
 void loop() {
-  // Benchmarking.
-  if ((microstep_period_in_flux_us <= kMicrostepPeriod_us) && (benchmarked == false)) {
-    acceleration_time_ms = millis() - reference_acceleration_time_ms;
-    Serial.print(F("Acceleration time (ms) = "));
-    Serial.println(acceleration_time_ms);
-    benchmarked = true;
-  }
-
-  if (distance_microsteps <= 0) {
-    // Reached target distance. Stop.
-    return;
-  }
-
-  AccelerateAndMoveAtSpeed();
+  // Move until target distance is reached.
+  if (distance_microsteps > 0) AccelerateAndMoveAtSpeed();
 }
 
 /// @brief Move by a microstep.
@@ -122,7 +108,14 @@ void AccelerateAndMoveAtSpeed() {
   unsigned long current_time_us = micros();
   if ((current_time_us - reference_time_us) >= microstep_period_in_flux_us) {    
     MoveByMicrostep();
+    if (benchmarked == false) reference_calculation_time_us = micros();
     CalculateNewSpeed();
+    if (benchmarked == false) {
+      calculation_time_us = micros() - reference_calculation_time_us;
+      benchmarked = true;
+      Serial.print(F("calculation time (us) = "));
+      Serial.println(calculation_time_us);
+    }
     reference_time_us = current_time_us;
   }
 }
