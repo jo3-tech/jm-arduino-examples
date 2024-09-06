@@ -116,7 +116,7 @@ void AccelerateAndMoveAtSpeed() {
 void CalculateNewSpeed() {
   if (microstep_period_in_flux_us > kMicrostepPeriod_us) {
     vi_microsteps_per_us = vi_microsteps_per_us + (kAcceleration_microsteps_per_us_per_us / vi_microsteps_per_us);
-    Ti_us = 1.0 / vi_microsteps_per_us; // Equation 13.
+    Ti_us = 1.0 / vi_microsteps_per_us;
     //Serial.print(F("v")); Serial.print(long(i)); Serial.print(F("_microsteps_per_us = ")); Serial.println(vi_microsteps_per_us);
     //Serial.print(F("T")); Serial.print(long(i)); Serial.print(F("_us = ")); Serial.println(Ti_us);
     i++;
