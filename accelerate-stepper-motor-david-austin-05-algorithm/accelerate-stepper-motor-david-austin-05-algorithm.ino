@@ -9,9 +9,9 @@
 
 /// @{
 /// @brief GPIO pins.
-const uint8_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
-const uint8_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
-const uint8_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
+const uint16_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
+const uint16_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
+const uint16_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
 /// @}
 
 /// @brief Serial properties.
@@ -34,22 +34,27 @@ const float kMicrostepAngle_degrees = kFullStepAngle_degrees / (kGearRatio * kMi
 /// @brief Motor states and targets.
 /// Distance.
 const float kDistance_degrees = 3600.0; ///< Target distance (degrees).
-uint64_t distance_microsteps = kDistance_degrees / kMicrostepAngle_degrees; ///< = 32000 Target distance (microsteps).
+uint32_t distance_microsteps = kDistance_degrees / kMicrostepAngle_degrees; ///< = 32000 Target distance (microsteps).
 /// Speed.
 const float kSpeed_RPM = 150.0; ///< Target speed (RPM).
 const float kSpeed_microsteps_per_s = (6.0 * kSpeed_RPM) / kMicrostepAngle_degrees; ///< = 8000.0 Target speed (microsteps/s).
-const uint64_t kMicrostepPeriod_us = 1000000.0 / kSpeed_microsteps_per_s; ///< = 125 Target speed based on the microstep period (us) between microsteps.
-uint64_t microstep_period_in_flux_us; ///< The microstep period (us) that is changing due to acceleration.
+const uint32_t kMicrostepPeriod_us = 1000000.0 / kSpeed_microsteps_per_s; ///< = 125 Target speed based on the microstep period (us) between microsteps.
+uint32_t microstep_period_in_flux_us; ///< The microstep period (us) that is changing due to acceleration.
 float Cn = 0.0; ///< nth speed (us), used to set microstep_period_in_flux_us.
 const float f = 1000000.0; ///< Timer frequency (count of timer ticks per sec) (Hz).
 uint64_t reference_time_us; ///< Reference time (us) for the microstep period.
 /// Acceleration.
 const float kAcceleration_microsteps_per_s_per_s = 3000.0; ///< Target acceleration (microsteps/s^2).
-int64_t n = 0; ///< Iteration counter.
+int32_t n = 0; ///< Iteration counter.
 /// @}
 
 /// @brief Other properties.
 uint16_t kStartupTime_ms = 1000; ///< Minimum startup/boot time in milliseconds (ms); based on the stepper driver.
+
+/// @brief Benchmarking.
+bool benchmarked = false; ///< Flag to indicate if the acceleration time has been obtained.
+uint64_t reference_acceleration_time_ms; ///< Reference time (ms) for benchmarking.
+uint32_t acceleration_time_ms; ///< Time taken (ms) to accelerate to max speed.
 
 /// @brief The main application entry point for initialisation tasks.
 void setup() {
@@ -75,12 +80,22 @@ void setup() {
 
   // Delay for the startup time.
   delay(kStartupTime_ms);
+
+  reference_acceleration_time_ms = millis();
 }
 
 /// @brief The continuously running function for repetitive tasks.
 void loop() {
+  // Benchmarking.
+  if ((microstep_period_in_flux_us <= kMicrostepPeriod_us) && (benchmarked == false)) {
+    acceleration_time_ms = millis() - reference_acceleration_time_ms;
+    Serial.print(F("Acceleration time (ms) = "));
+    Serial.println(acceleration_time_ms);
+    benchmarked = true;
+  }
+
   if (distance_microsteps <= 0) {
-    // Reached target distance.
+    // Reached target distance. Stop.
     return;
   }
 
@@ -112,7 +127,7 @@ void AccelerateAndMoveAtSpeed() {
 void CalculateNewSpeed() {
   if (microstep_period_in_flux_us > kMicrostepPeriod_us) {
     Cn = Cn - ((2.0 * Cn) / ((4.0 * n) + 1)); // Equation 13.
-    //Serial.print(F("C")); Serial.print(long(n)); Serial.print(F(" = ")); Serial.println(Cn);
+    //Serial.print(F("C")); Serial.print(n); Serial.print(F(" = ")); Serial.println(Cn);
     n++;
   }
   else {
