@@ -55,6 +55,11 @@ float q = 0.0; ///< Variable to calculate a more accurate value of p at the expe
 /// @brief Other properties.
 uint16_t kStartupTime_ms = 1000; ///< Minimum startup/boot time in milliseconds (ms); based on the stepper driver.
 
+/// @brief Benchmarking.
+bool benchmarked = false; ///< Flag to indicate if the acceleration time has been obtained.
+uint64_t reference_acceleration_time_ms; ///< Reference time (ms) for benchmarking.
+uint32_t acceleration_time_ms; ///< Time taken (ms) to accelerate to max speed.
+
 /// @brief The main application entry point for initialisation tasks.
 void setup() {
   // Initialise the serial port.
@@ -79,12 +84,22 @@ void setup() {
 
   // Delay for the startup time.
   delay(kStartupTime_ms);
+
+  reference_acceleration_time_ms = millis();
 }
 
 /// @brief The continuously running function for repetitive tasks.
 void loop() {
+  // Benchmarking.
+  if ((microstep_period_in_flux_us <= kMicrostepPeriod_us) && (benchmarked == false)) {
+    acceleration_time_ms = millis() - reference_acceleration_time_ms;
+    Serial.print(F("Acceleration time (ms) = "));
+    Serial.println(acceleration_time_ms);
+    benchmarked = true;
+  }
+
   if (distance_microsteps <= 0) {
-    // Reached target distance.
+    // Reached target distance. Stop.
     return;
   }
 
