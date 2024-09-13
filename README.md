@@ -8,7 +8,7 @@ This repository is a collection of examples, usually written during feasibility 
 
 ## accelerate-stepper-motor
 
-The following examples were created during the development of the [MT-arduino-stepper-driver](https://github.com/Morgritech/MT-arduino-stepper-driver) library. All 3 algorithms were implemented in the library as user-selectable options. A simple [setup](documentation/accelerate-stepper-motor-setup.png) for testing the algorithms can be found in the "documentation" folder.
+The following examples were created during the development of the [MT-arduino-stepper-driver](https://github.com/Morgritech/MT-arduino-stepper-driver) library. All 3 algorithms were implemented in the library as user-selectable options. A simple [wiring diagram](documentation/accelerate-stepper-motor-wiring-diagram.png), and a [schematic](documentation/accelerate-stepper-motor-schematic.png) showing the setup for testing the algorithms can be found in the "documentation" folder.
 
 ### accelerate-stepper-motor-austin-05-algorithm
 
