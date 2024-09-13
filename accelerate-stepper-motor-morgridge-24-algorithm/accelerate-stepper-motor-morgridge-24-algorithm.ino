@@ -3,15 +3,14 @@
 // Licensed under MIT License.
 // See the LICENSE file in the project root for full license details.
 
-/// @file accelerate-stepper-motor-david-austin-05-algorithm.ino
-/// @brief An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
-/// ‘Embedded Systems Programming’ January 2005, ‘Generate stepper-motor speed profiles in real time’, an article by David Austin.
+/// @file accelerate-stepper-motor-joseph-morgridge-24-algorithm.ino
+/// @brief An example to illustrate how to accelerate a stepper motor using an algorithm created during the development of the MT-arduino-stepper-driver library.
 
 /// @{
 /// @brief GPIO pins.
-const uint16_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
-const uint16_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
-const uint16_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
+const uint8_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
+const uint8_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
+const uint8_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
 /// @}
 
 /// @brief Serial properties.
@@ -40,12 +39,12 @@ const float kSpeed_RPM = 150.0; ///< Target speed (RPM).
 const float kSpeed_microsteps_per_s = (6.0 * kSpeed_RPM) / kMicrostepAngle_degrees; ///< = 8000.0 Target speed (microsteps/s).
 const uint32_t kMicrostepPeriod_us = 1000000.0 / kSpeed_microsteps_per_s; ///< = 125 Target speed based on the microstep period (us) between microsteps.
 uint32_t microstep_period_in_flux_us; ///< The microstep period (us) that is changing due to acceleration.
-float Cn = 0.0; ///< nth speed (us), used to set microstep_period_in_flux_us.
-const float f = 1000000.0; ///< Timer frequency (count of timer ticks per sec) (Hz).
+float vi_microsteps_per_s = 0.0; ///< ith speed (microsteps/s), used to calculate microstep_period_in_flux_us.
+float Ti_us = 0.0; ///< ith speed (us), used to set the microstep_period_in_flux_us.
 uint64_t reference_time_us; ///< Reference time (us) for the microstep period.
 /// Acceleration.
 const float kAcceleration_microsteps_per_s_per_s = 3000.0; ///< Target acceleration (microsteps/s^2).
-int32_t n = 0; ///< Iteration counter.
+uint32_t i = 1; ///< Iteration counter.
 /// @}
 
 /// @brief Other properties.
@@ -72,11 +71,13 @@ void setup() {
   // Set motion direction (if required).
   //digitalWrite(kDirPin, HIGH);
 
-  // Calculate the speed/microstep period for n = 0. 
-  Cn = 0.676 * f * sqrt(2.0 / kAcceleration_microsteps_per_s_per_s); // Equation 15.
-  //Serial.print(F("C0 = ")); Serial.println(Cn);
-  microstep_period_in_flux_us = Cn;
-  n = 1;
+  // Calculate the speed/microstep period for i = 1.
+  vi_microsteps_per_s = kAcceleration_microsteps_per_s_per_s * sqrt(2.0 / kAcceleration_microsteps_per_s_per_s);
+  Ti_us = 1000000.0 / vi_microsteps_per_s;
+  //Serial.print(F("v1_microsteps_per_s = ")); Serial.println(vi_microsteps_per_s);
+  //Serial.print(F("T1_us = ")); Serial.println(Ti_us);
+  microstep_period_in_flux_us = Ti_us;
+  i = 2;
 
   // Delay for the startup time.
   delay(kStartupTime_ms);
@@ -120,13 +121,15 @@ void AccelerateAndMoveAtSpeed() {
 /// @brief Calculate the new speed/microstep period.
 void CalculateNewSpeed() {
   if (microstep_period_in_flux_us > kMicrostepPeriod_us) {
-    Cn = Cn - ((2.0 * Cn) / ((4.0 * n) + 1)); // Equation 13.
-    //Serial.print(F("C")); Serial.print(n); Serial.print(F(" = ")); Serial.println(Cn);
-    n++;
+    vi_microsteps_per_s = vi_microsteps_per_s + (kAcceleration_microsteps_per_s_per_s / vi_microsteps_per_s);
+    Ti_us = 1000000.0 / vi_microsteps_per_s;
+    //Serial.print(F("v")); Serial.print(i); Serial.print(F("_microsteps_per_s = ")); Serial.println(vi_microsteps_per_s);
+    //Serial.print(F("T")); Serial.print(i); Serial.print(F("_us = ")); Serial.println(Ti_us);
+    i++;
   }
   else {
-    Cn = kMicrostepPeriod_us;
+    Ti_us = kMicrostepPeriod_us;
   }
 
-  microstep_period_in_flux_us = Cn;
+  microstep_period_in_flux_us = Ti_us;
 }

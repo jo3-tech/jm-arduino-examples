@@ -5,13 +5,13 @@
 
 /// @file accelerate-stepper-motor-aryeh-eiderman-04-algorithm.ino
 /// @brief An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
-/// ‘Real Time Stepper Motor Linear Ramping Just by Addition and Multiplication’ 2004, a paper by Aryeh Eiderman.
+/// Eiderman, A. (2004). Real Time Stepper Motor Linear Ramping Just by Addition and Multiplication. Retrieved from HWML: http://hwml.com/LeibRamp.htm.
 
 /// @{
 /// @brief GPIO pins.
-const uint16_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
-const uint16_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
-const uint16_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
+const uint8_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
+const uint8_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
+const uint8_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
 /// @}
 
 /// @brief Serial properties.
