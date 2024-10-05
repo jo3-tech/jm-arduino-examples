@@ -7,36 +7,27 @@
 /// @brief An example to illustrate how to accelerate a stepper motor using the algorithm presented in:
 /// Eiderman, A. (2004). Real Time Stepper Motor Linear Ramping Just by Addition and Multiplication. Retrieved from HWML: http://hwml.com/LeibRamp.htm.
 
-/// @{
-/// @brief GPIO pins.
-const uint8_t kPulPin = 11; ///< For the stepper driver PUL/STP/CLK (pulse/step) pin.
-const uint8_t kDirPin = 12; ///< For the stepper driver DIR/CW (direction) pin.
-const uint8_t kEnaPin = 13; ///< For the stepper driver ENA/EN (enable) pin.
-/// @}
+// GPIO pins.
+const uint8_t kPulPin = 11; ///< Output pin for the stepper driver PUL/STP/CLK (pulse/step) interface.
+const uint8_t kDirPin = 12; ///< Output pin for the stepper driver DIR/CW (direction) interface.
+const uint8_t kEnaPin = 13; ///< Output pin for the stepper driver ENA/EN (enable) interface.
 
-/// @brief Serial properties.
-int kBaudRate = 9600; ///< The serial communication speed.
+// Serial properties.
+const int kBaudRate = 9600; ///< The serial communication speed.
 
-/// @{
-/// @brief Stepper driver properties.
+// Stepper driver properties.
 const uint16_t kMicrostepMode = 16; ///< Microstep mode (1/16). Remember to change the setting on the stepper driver to match.
 const uint8_t kPulDelay = round(2.5); ///< Minimum time in microseconds (us) to delay after a low or high-level pulse of the PUL pin. Obtained from the stepper driver data sheet.
-/// @}
 
-/// @{
-/// @brief Stepper motor/drive system properties.
-const float kFullStepAngle_degrees = 1.8; ///< The full step angle (degrees).
-const float kGearRatio = 1.0; ///< Gear ratio for motors coupled with a gearbox in the drive system.
+// Stepper motor/drive system properties.
+const float kFullStepAngle_degrees = 1.8F; ///< The full step angle (degrees).
+const float kGearRatio = 1.0F; ///< Gear ratio for motors coupled with a gearbox in the drive system.
 const float kMicrostepAngle_degrees = kFullStepAngle_degrees / (kGearRatio * kMicrostepMode); ///< = 0.1125 Microstep angle (degrees).
-/// @}
 
-/// @{
-/// @brief Motor states and targets.
-/// Distance.
+// Motor states and targets.
 const float kDistance_degrees = 3600.0; ///< Target distance (degrees).
 uint32_t distance_microsteps = kDistance_degrees / kMicrostepAngle_degrees; ///< = 32000 Target distance (microsteps).
-/// Speed.
-const float kSpeed_RPM = 150.0; ///< Target speed (RPM).
+const float kSpeed_RPM = 150.0F; ///< Target speed (RPM).
 const float kSpeed_microsteps_per_s = (6.0 * kSpeed_RPM) / kMicrostepAngle_degrees; ///< = 8000.0 Target speed (microsteps/s).
 const uint32_t kMicrostepPeriod_us = 1000000.0 / kSpeed_microsteps_per_s; ///< = 125 Target speed based on the microstep period (us) between microsteps.
 uint32_t microstep_period_in_flux_us; ///< The microstep period (us) that is changing due to acceleration.
@@ -44,18 +35,16 @@ float p = 0.0; ///< ith speed (us), used to set microstep_period_in_flux_us.
 const float v0 = 0.0; ///< Base speed (microsteps/s) used to calculate the initial value of p. 
 const float f = 1000000.0; ///< Timer frequency (count of timer ticks per sec) (Hz).
 uint64_t reference_time_us; ///< Reference time (us) for the microstep period.
-/// Acceleration.
 const float kAcceleration_microsteps_per_s_per_s = 3000.0; ///< Target acceleration (microsteps/s^2).
 const float R = kAcceleration_microsteps_per_s_per_s / (f * f); ///< Constant multiplier.
 const float m = -R; ///< Variable multiplier that depends on movement phase (m = -R for acceleration, m = 0 in-between, m = R for deceleration).
 int32_t i = 0; ///< Iteration counter.
 float q = 0.0; ///< Variable to calculate a more accurate value of p at the expense of processing overhead (i.e., slower).
-/// @}
 
-/// @brief Other properties.
+// Other properties.
 uint16_t kStartupTime_ms = 1000; ///< Minimum startup/boot time in milliseconds (ms); based on the stepper driver.
 
-/// @brief Benchmarking.
+// Benchmarking.
 bool benchmarked = false; ///< Flag to indicate if the acceleration time has been obtained.
 uint64_t reference_calculation_time_us; ///< Reference time (us) for benchmarking.
 uint32_t calculation_time_us; ///< Time taken (us) to calculate a new speed.
